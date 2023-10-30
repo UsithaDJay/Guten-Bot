@@ -1,38 +1,15 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[31]:
-
-
 import streamlit as st
 import requests
 
+backend_base_url = "http://ac59-35-230-83-255.ngrok-free.app"
 
-# In[32]:
-
-
-# Base URL for the Flask backend
-backend_base_url = "http://127.0.0.1:5000"
-
-
-# In[33]:
-
-
-st.set_page_config(page_title="Guten-bot", page_icon="📚",layout="wide")
-
-
-# In[34]:
-
+st.set_page_config(page_title="Guten-Bot", page_icon="📚",layout="wide")
 
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 local_css("style\style.css")
-
-
-# In[35]:
-
 
 # Center-align the user input text
 st.markdown("""
@@ -41,21 +18,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
-# In[36]:
-
-
 # HEAD SESSION
 with st.container():
-    st.subheader("Welcom To This Guten-bot :wave:")
-    st.title("Classic Book Summarization")
+    st.title("Welcome to Guten-Bot :wave:")
+    st.subheader("Classic Book Summarization")
     st.write("[available books >>](https://www.gutenberg.org/)")
 
 
-# In[37]:
-
-
-# get summary and get answer
 with st.container():
     st.write("---")
     # User input for book name and query
@@ -64,35 +33,39 @@ with st.container():
     with left:
         st.markdown("#### Enter the name of the book:")
         book_name = st.text_input(" ")
-        if book_name:            
-            option = st.selectbox("Select an option:", ["Get Summary", "Get Answer"])
+        if st.button("Submit"):            
+            response = requests.post(f"{backend_base_url}/submit", json={"book_name": book_name})
+            status = response.json().get("status")
+            st.write(f"**Status:** {status}")
 
-            if option == "Get Summary":
-                # Button to get book summary
-                if st.button("Get Summary"):
-                    response = requests.post(f"{backend_base_url}/get_summary", json={"book_name": book_name})
-                    book_summary = response.json().get("book_summary")
-                    st.write(f"**Book Summary:** {book_summary}")
-            elif option == "Get Answer":
-                # User input for query
-                # query = st.text_input("Enter your query:")
-                st.markdown("#### Enter your query:")
-                query = st.text_input("  ")
+        option = st.selectbox("Select an option:", ["Get Summary", "Get Answer"])
 
-                # Button to get answer
-                if st.button("Get Answer"):
-                    
-                    if not query:
-                        st.write("Please enter your query.")
-                    else:
-                        response = requests.post(f"{backend_base_url}/get_answer", json={"query": query})
-                        answer = response.json().get("answer")
-                        st.write(f"Answer: {answer}")
-        else:
-            st.write("Please enter the name of the book to continue.")
+        if option == "Get Summary":
+            # Button to get book summary
+            if st.button("Get Summary"):
+                response = requests.get(f"{backend_base_url}/get_summary")
+                # print(response)
+                book_summary = response.json().get("book_summary")
+                # print(book_summary)
+                st.write(f"**Book Summary:** {book_summary}")
+        elif option == "Get Answer":
+            # User input for query
+            # query = st.text_input("Enter your query:")
+            st.markdown("#### Enter your query:")
+            query = st.text_input("  ")
 
-
-# In[40]:
+            # Button to get answer
+            if st.button("Get Answer"):
+                
+                if not query:
+                    st.write("Please enter your query.")
+                else:
+                    # answer = get_answer_async(query)
+                    response = requests.post(f"{backend_base_url}/get_response", json={"query": query})
+                    answer = response.json().get("answer")
+                    st.write(f"Answer: {answer}")
+        # else:
+        #     st.write("Please enter the name of the book and press submit to continue.")
 
 
 with st.container():
@@ -116,34 +89,3 @@ with left_column:
     st.markdown(contect_form, unsafe_allow_html=True)
 with right_column:
     st.empty()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
