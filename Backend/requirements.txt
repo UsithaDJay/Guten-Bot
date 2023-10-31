@@ -1,0 +1,9 @@
+replicate
+faiss-gpu
+transformers
+langchain
+sentence_transformers
+InstructorEmbedding
+textsum
+flask-ngrok
+pyngrok
