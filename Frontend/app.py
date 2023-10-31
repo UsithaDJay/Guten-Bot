@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-backend_base_url = "http://ac59-35-230-83-255.ngrok-free.app"
+backend_base_url = "http://8211-35-197-82-72.ngrok-free.app"
 
 st.set_page_config(page_title="Guten-Bot", page_icon="📚",layout="wide")
 
